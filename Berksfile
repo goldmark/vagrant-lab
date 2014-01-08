@@ -3,10 +3,16 @@
 
 site :opscode
 
-cookbook 'yum'
+cookbook 'timezone-ii'
+
+cookbook 'ntp'
 
 cookbook 'apache2'
 
 cookbook 'java'
 
 cookbook 'jenkins'
+
+cookbook 'git'
+
+cookbook 'nexus'

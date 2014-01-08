@@ -17,24 +17,32 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     # config.vm.network :private_network, ip: "192.168.33.10"
     jenkins.vm.provision :chef_solo do |chef|
-      chef.add_recipe "yum"
+      chef.add_recipe "timezone-ii"
+      chef.add_recipe "ntp"
+      chef.add_recipe "git"
       chef.add_recipe "apache2"
       chef.add_recipe "java"
       chef.add_recipe "jenkins::server"
       chef.add_recipe "jenkins::proxy"
       chef.json = {
+        :"timezone-ii" => {
+           :tz => 'America/New_York'
+        },
+        :ntp => {
+          :servers => ['pool.ntp.org']
+        },
         :java => {
           :install_flavor => "oracle",
           :jdk => {
             :"6" => {
               :"x66_64" => {
-                "url" => "https://ihealthbuild.agilexhealth.com/artifactory/ext-release-local/jdk/jdk/6u45-linux/jdk-6u45-linux-x64.bin",
-                "checksum" => "24425cdb69c11e86d6b58757b29e5ba4e4977660"
+                :url => "https://ihealthbuild.agilexhealth.com/artifactory/ext-release-local/jdk/jdk/6u45-linux/jdk-6u45-linux-x64.bin",
+                :checksum => "24425cdb69c11e86d6b58757b29e5ba4e4977660"
               }
             }
           },
           :oracle => {
-            "accept_oracle_download_terms" => true
+            :accept_oracle_download_terms => true
           }
         },
         :jenkins => {
@@ -63,14 +71,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     # config.vm.network :private_network, ip: "192.168.33.10"
     nexus.vm.provision :chef_solo do |chef|
-      chef.add_recipe "yum"
-      chef.add_recipe "apache2"
+      chef.add_recipe "ntp"
+      #chef.add_recipe "apache2"
       
       chef.add_recipe "java"
       chef.add_recipe "nexus"
       chef.json = {
+        'ntp' => {
+          'servers' => ['pool.ntp.org']
+        },
         :java => {
           :install_flavor => "oracle",
+          :jdk => {
+            :"6" => {
+              :"x66_64" => {
+                "url" => "https://ihealthbuild.agilexhealth.com/artifactory/ext-release-local/jdk/jdk/6u45-linux/jdk-6u45-linux-x64.bin",
+                "checksum" => "24425cdb69c11e86d6b58757b29e5ba4e4977660"
+              }
+            }
+          },
           :oracle => {
             "accept_oracle_download_terms" => true
           }
